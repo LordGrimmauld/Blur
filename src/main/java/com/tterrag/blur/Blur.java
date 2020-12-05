@@ -2,7 +2,6 @@ package com.tterrag.blur;
 
 import static com.tterrag.blur.Blur.MODID;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
@@ -10,13 +9,11 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 
 import net.minecraft.resources.*;
-import org.apache.logging.log4j.LogManager;
 
 import com.tterrag.blur.util.ShaderResourcePack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderDefault;
 import net.minecraft.client.shader.ShaderGroup;
@@ -34,7 +31,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MODID)
 public class Blur {
@@ -63,13 +59,6 @@ public class Blur {
 
                 @Override
                 public void func_230230_a_(Consumer<ResourcePackInfo> consumer, ResourcePackInfo.IFactory packInfoFactory) {
-                    NativeImage img = null;
-                    try {
-                        img = NativeImage.read(dummyPack.getRootResourceStream("pack.png"));
-                    } catch (IOException e) {
-                        LogManager.getLogger().error("Could not load blur's pack.png", e);
-                    }
-                    @SuppressWarnings({ "unchecked", "deprecation" })
                     ResourcePackInfo var3 = new ResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
                             PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, IPackNameDecorator.field_232625_a_, false);
                     if (var3 != null) {
