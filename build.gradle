@@ -27,7 +27,7 @@ archivesBaseName = "Blur"
 version = "${mod_version}-${buildnumber}"
 
 minecraft {
-    mappings channel: 'snapshot', version: '20191106-1.14.3'
+    mappings channel: 'snapshot', version: '20200514-1.16'
     
     //accessTransformer = file('my_at.cfg')
 
@@ -98,7 +98,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:' + minecraft_version + '-' + forge_version
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
 
 tasks.curseforge.enabled = !dev && project.hasProperty('curseforge_key')

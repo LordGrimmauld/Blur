@@ -5,10 +5,11 @@ import static com.tterrag.blur.Blur.MODID;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 
+import net.minecraft.resources.*;
 import org.apache.logging.log4j.LogManager;
 
 import com.tterrag.blur.util.ShaderResourcePack;
@@ -16,16 +17,10 @@ import com.tterrag.blur.util.ShaderResourcePack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.client.shader.Shader;
 import net.minecraft.client.shader.ShaderDefault;
 import net.minecraft.client.shader.ShaderGroup;
-import net.minecraft.resources.IPackFinder;
-import net.minecraft.resources.PackCompatibility;
-import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackInfo.Priority;
-import net.minecraft.resources.ResourcePackList;
-import net.minecraft.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,16 +53,16 @@ public class Blur {
     
     public Blur() {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
-        	FMLJavaModLoadingContext.get().getModEventBus().register(this);
+        	// FMLJavaModLoadingContext.get().getModEventBus().register(this);
             MinecraftForge.EVENT_BUS.register(this);
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BlurConfig.clientSpec);
             
     //        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.RESOURCEPACK, () -> (mc, pack) -> dummyPack);
-            ResourcePackList<ClientResourcePackInfo> rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getInstance(), "field_110448_aq");
+            ResourcePackList rps = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getInstance(), "field_110448_aq");
             rps.addPackFinder(new IPackFinder() {
-    
+
                 @Override
-                public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, ResourcePackInfo.IFactory<T> packInfoFactory) {
+                public void func_230230_a_(Consumer<ResourcePackInfo> consumer, ResourcePackInfo.IFactory packInfoFactory) {
                     NativeImage img = null;
                     try {
                         img = NativeImage.read(dummyPack.getRootResourceStream("pack.png"));
@@ -75,10 +70,10 @@ public class Blur {
                         LogManager.getLogger().error("Could not load blur's pack.png", e);
                     }
                     @SuppressWarnings({ "unchecked", "deprecation" })
-                    T var3 = (T) new ClientResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
-                            PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, img);
+                    ResourcePackInfo var3 = new ResourcePackInfo("blur", true, () -> dummyPack, new StringTextComponent(dummyPack.getName()), new StringTextComponent("Default shaders for Blur"),
+                            PackCompatibility.COMPATIBLE, Priority.BOTTOM, true, IPackNameDecorator.field_232625_a_, false);
                     if (var3 != null) {
-                    	nameToPackMap.put("blur", var3);
+                    	consumer.accept(var3);
                     }
                 }
             });
